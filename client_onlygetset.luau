@@ -9,10 +9,12 @@ type TYPE = any
 local KEY = ""
 local HttpService = game:GetService("HttpService")
 
+type Prioritizable = {priority: number}
+local function prioritizer(a: Prioritizable, b: Prioritizable): boolean return a.priority > b.priority end
 -- MATCHES: "UPPERKEY" "KEY" "TYPE"
 --ETELED
 
-local setUPPERKEYHandlers: {{id: string, priority: number, handler: (TYPE) -> boolean?}} = {}
+local setUPPERKEYHandlers: {Prioritizable & {id: string, handler: (TYPE) -> boolean?}} = {}
 function module.getUPPERKEY(): TYPE
     return data.KEY :: TYPE
 end
@@ -28,7 +30,7 @@ end
 function module.subscribeToUPPERKEY(handler: (TYPE) -> boolean?, priority: number?): string
     local id = HttpService:GenerateGUID(false)
     table.insert(setUPPERKEYHandlers, {id = id, priority = priority or 1, handler = handler})
-    table.sort(setUPPERKEYHandlers, function(a,b) return a.priority > b.priority end)
+    table.sort(setUPPERKEYHandlers, prioritizer)
     return id
 end
 function module.unsubscribeFromUPPERKEY(id: string)
