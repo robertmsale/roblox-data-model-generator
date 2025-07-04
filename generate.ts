@@ -114,9 +114,7 @@ function injectGetSet(forTemplate: string, fromGetSetTemplate: string, model: Da
             getset = _.replace(getset, /--\[\[PARAMS\]\]/g, m.computed.set.params.join(", "))
             getset = _.replace(getset, /--COMPUTED_SET/g, m.computed.set.logic.map(v => `    ${v}`).join("\n"))
         }
-        if (isValidatableModel(m)) {
-            getset = _.replace(getset, /--VALIDATOR/g, m.validator.map(v => `    ${v}`).join("\n"))
-        }
+        getset = _.replace(getset, /--VALIDATOR/g, isValidatableModel(m) ? m.validator.map(v => `    ${v}`).join("\n") : "")
         funcs.push(getset)
     }
     let retval =  _.replace(forTemplate, "--GETSET", funcs.join("\n"))
