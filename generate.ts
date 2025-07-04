@@ -15,8 +15,9 @@ import {
     isValidImportModel
 } from "./types.ts"
 import * as path from "jsr:@std/path"
-
-const header = Deno.readTextFileSync("./header.luau")
+const currentFilePath = path.fromFileUrl(import.meta.url)
+const currentDir = path.dirname(currentFilePath)
+const header = Deno.readTextFileSync(path.join(currentDir, "header.luau"))
 
 function parseUnionType(input: string): string {
     if (_.startsWith(input, "string") && input.length > "string".length) {
@@ -81,16 +82,16 @@ function injectStoreName(intoTemplate: string, storeName: string): string {
     return _.replace(intoTemplate, `"STORE_NAME"`, `"${storeName}"`)
 }
 
-const serverImmediate = Deno.readTextFileSync("./server_immediate.luau")
-const serverBatched = Deno.readTextFileSync("./server_batched.luau")
-const serverEphemeral = Deno.readTextFileSync("./server_ephemeral.luau")
-const serverGetSet = trimHeader(Deno.readTextFileSync("./server_playergetset.luau"))
-const clientPersistent = Deno.readTextFileSync("./client_persistent.luau")
-const clientGetSet = trimHeader(Deno.readTextFileSync("./client_persistentgetset.luau"))
-const clientOnly = trimHeader(Deno.readTextFileSync("./client_only.luau"))
-const clientOnlyGetSet = trimHeader(Deno.readTextFileSync("./client_onlygetset.luau"))
-const computedGet = trimHeader(Deno.readTextFileSync("./computed_get.luau"))
-const computedSet = trimHeader(Deno.readTextFileSync("./computed_set.luau"))
+const serverImmediate = Deno.readTextFileSync(path.join(currentDir, "server_immediate.luau"))
+const serverBatched = Deno.readTextFileSync(path.join(currentDir, "server_batched.luau"))
+const serverEphemeral = Deno.readTextFileSync(path.join(currentDir, "server_ephemeral.luau"))
+const serverGetSet = trimHeader(Deno.readTextFileSync(path.join(currentDir, "server_playergetset.luau")))
+const clientPersistent = Deno.readTextFileSync(path.join(currentDir, "client_persistent.luau"))
+const clientGetSet = trimHeader(Deno.readTextFileSync(path.join(currentDir, "client_persistentgetset.luau")))
+const clientOnly = trimHeader(Deno.readTextFileSync(path.join(currentDir, "client_only.luau")))
+const clientOnlyGetSet = trimHeader(Deno.readTextFileSync(path.join(currentDir, "client_onlygetset.luau")))
+const computedGet = trimHeader(Deno.readTextFileSync(path.join(currentDir, "computed_get.luau")))
+const computedSet = trimHeader(Deno.readTextFileSync(path.join(currentDir, "computed_set.luau")))
 
 function injectGetSet(forTemplate: string, fromGetSetTemplate: string, model: Data): string {
     let funcs: string[] = []
