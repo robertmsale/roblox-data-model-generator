@@ -13,10 +13,9 @@ local store = "STORE_NAME"
 module.STORAGE_OBJECT = lp:WaitForChild(store .. "Storage")
 
 function module.getEntireModel(): Data 
-    local data = {}
-    for k in default do
-        data[k] = module.STORAGE_OBJECT:GetAttribute(k)
-    end
+    local data = {
+--ENTIREMODELGETTER
+    }
     return data :: Data
 end
 

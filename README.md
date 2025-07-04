@@ -203,4 +203,8 @@ function module.setPlayerUserInputType(toValue: number)
 end
 ```
 
-If you are writing computed properties or validators, it's important to use `toValue` for validators to reference the input parameter, and to use the getter for the property if you want to compute a property. Setters for computed properties are optional and if you set stored properties from a computed property you want to use their setter so it executes the observers. 
+If you are writing computed properties or validators, it's important to use `toValue` for validators to reference the input parameter, and to use the getter for the property if you want to compute a property. Setters for computed properties are optional and if you set stored properties from a computed property you want to use their setter so it executes the observers.
+
+## Note
+
+For non-persistent data stores, any type may be used including tables. For persistent data stores, since it is based on Instance attributes there is a restriction that each property must be a valid attribute type.

@@ -3,7 +3,7 @@ import _ from "npm:lodash";
 import {
     AttributeType,
     AnyModel,
-    Model,
+    DataModel,
     ValidatableModel,
     ComputedModel,
     ComputedSetterModel,
@@ -46,7 +46,7 @@ function parseHeader(model: Data): string {
     )
 
     modelHeader = _.replace(modelHeader, "--DEFAULTBLOCK", _.compact(keys
-        .map(v => isComputed(v) ? "" : `    ${v} = ${(model.model[v] as Model).default}`))
+        .map(v => isComputed(v) ? "" : `    ${v} = ${(model.model[v] as DataModel).default}`))
         .join(",\n")
     )
 
@@ -118,7 +118,18 @@ function injectGetSet(forTemplate: string, fromGetSetTemplate: string, model: Da
         }
         funcs.push(getset)
     }
-    return _.replace(forTemplate, "--GETSET", funcs.join("\n"))
+    let retval =  _.replace(forTemplate, "--GETSET", funcs.join("\n"))
+    retval = _.replace(retval, /--ENTIREMODELGETTER/g, 
+        _.compact(_.keys(model.model).map(v => 
+            isComputedModel(model.model[v]) ? "" : `    ${v} = module.get${_.upperFirst(v)}()`
+        )).join(",\n")
+    )
+    retval = _.replace(retval, /--ENTIREMODELSETTER/g,
+        _.compact(_.keys(model.model).map(v => 
+            isComputedModel(model.model[v]) ? "" : `    if toValue["${v}"] ~= nil then module.set${_.upperFirst(v)}(toValue["${v}"]) end`
+        )).join("\n")
+    )
+    return retval
 }
 
 function removeBlankLines(fromTemplate: string): string {
