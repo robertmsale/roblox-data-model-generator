@@ -72,7 +72,7 @@ function processIncludes(forTemplate: string): string {
     const next = () => _.findIndex(lines, v => _.startsWith(v, preamble))
     for (let i = next(); i !== -1; i = next()) {
         const fname = lines[i].substring(preamble.length).trim()
-        const fcontent = processIncludes(trimHeader(Deno.readTextFileSync(fname)))
+        const fcontent = processIncludes(trimHeader(Deno.readTextFileSync(path.join(currentDir,fname))))
         lines[i] = fcontent
     }
     return lines.join("\n")
