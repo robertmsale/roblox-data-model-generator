@@ -121,7 +121,7 @@ function injectGetSet(forTemplate: string, fromGetSetTemplate: string, model: Da
     let retval =  _.replace(forTemplate, "--GETSET", funcs.join("\n"))
     retval = _.replace(retval, /--ENTIREMODELGETTER/g, 
         _.compact(_.keys(model.model).map(v => 
-            isComputedModel(model.model[v]) ? "" : `    ${v} = module.get${_.upperFirst(v)}()`
+            isComputedModel(model.model[v]) ? "" : `        ${v} = module.get${_.upperFirst(v)}()`
         )).join(",\n")
     )
     retval = _.replace(retval, /--ENTIREMODELSETTER/g,
