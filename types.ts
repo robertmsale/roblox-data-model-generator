@@ -6,8 +6,8 @@ const attributeTypeSet = new Set(["string", "number", "boolean", "UDim", "UDim2"
 function isProperAttributeType(v: unknown): v is AttributeType {
     return typeof(v) === "string" && (
         attributeTypeSet.has(v) || (
-            _.startsWith("string<") && 
-            _.endsWith(">") && 
+            _.startsWith(v, "string<") && 
+            _.endsWith(v, ">") && 
             v.substring("string<".length, v.length-1).split(" | ").length > 0
         )
     )
@@ -50,7 +50,7 @@ export type AttributableComputedSetterModel = ComputedSetterModel & Attributable
 
 function isAttributable(m: unknown): m is Attributable {
     const t = _.get(m, "type")
-    return _.isString(t) && attributeTypeSet.has(t)
+    return isProperAttributeType(t)
 }
 
 export function isAnyModel(m: unknown): m is AnyModel {
