@@ -21,7 +21,7 @@ end
 
 local StorageEvents = ReplicatedStorage:WaitForChild("StorageEvents") :: Folder
 
-module.EVENT = StorageEvents:WaitForChild(store .. "Event")
+module.EVENT = StorageEvents:WaitForChild(store .. "Event") :: RemoteEvent
 
 --GETSET
 
