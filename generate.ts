@@ -19,6 +19,10 @@ const currentFilePath = path.fromFileUrl(import.meta.url)
 const currentDir = path.dirname(currentFilePath)
 const header = Deno.readTextFileSync(path.join(currentDir, "header.luau"))
 
+function isUnionType(input: string): boolean {
+    return _.startsWith(input, "string") && input.length > "string".length
+}
+
 function parseUnionType(input: string): string {
     if (_.startsWith(input, "string") && input.length > "string".length) {
         return input
@@ -36,10 +40,12 @@ function parseHeader(model: Data): string {
     const isComputed = (v: string) => isComputedModel(model.model[v]) ? true : false
     const dataBlock = _.compact(keys
         .map(v => isComputed(v) ? "" : `    ${v}: ${parseUnionType(model.model[v].type)}`))
+    const optionalDataBlock = _.compact(keys
+        .map(v => isComputed(v) ? "" : `    ${v}: ${isUnionType(model.model[v].type) ? parseUnionType(model.model[v].type) + " | nil" : model.model[v].type + "?"}`))
 
     modelHeader = _.replace(modelHeader, "--DATABLOCK", dataBlock.join(",\n"))
 
-    modelHeader = _.replace(modelHeader, "--OPTIONALDATABLOCK", dataBlock.map(v => `${v}?`).join(",\n"))
+    modelHeader = _.replace(modelHeader, "--OPTIONALDATABLOCK", optionalDataBlock.join(",\n"))
 
     modelHeader = _.replace(modelHeader, "--KEYSBLOCK", "export type Keys = " + _.compact(keys
         .map(v => isComputed(v) ? "" : `"${v}"`))

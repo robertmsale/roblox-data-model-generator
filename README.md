@@ -28,7 +28,12 @@ export default {
                 type: "boolean",
                 default: "false",
                 description: "Did user complete level 1"
-            }
+            },
+            currentLevel: {
+                type: "string<Nexus | Prologue | Level1 | Level2>",
+                default: "\"Nexus\"",
+                description: "The current level"
+            } // Parses to `currentLevel: "Nexus" | "Prologue" | "Level1" | "Level2"`
         }
     },
     playerState: {
@@ -208,3 +213,29 @@ If you are writing computed properties or validators, it's important to use `toV
 ## Note
 
 For non-persistent data stores, any type may be used including tables. For persistent data stores, since it is based on Instance attributes there is a restriction that each property must be a valid attribute type.
+
+For `string` types, there is a special case where you can define a fixed set of values:
+```ts
+{
+    playerData: {
+        store: "PlayerDataStore",
+        type: "Immediate",
+        model: {
+            someValue: {
+                type: "string<A | B | C>",
+                default: `"A"`,
+                description: "One of three possible values"
+            }
+        }
+    }
+}
+```
+Which parses to:
+```luau
+export type Data = {
+    someValue: "A" | "B" | "C"
+}
+export type OptionalData = {
+    someValue: "A" | "B" | "C" | nil
+}
+```
